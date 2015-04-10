@@ -1,0 +1,34 @@
+<Directory "<%= @root %>">
+    Options Indexes FollowSymLinks
+    AllowOverride All
+    Order allow,deny
+    Allow from all
+</Directory>
+
+<VirtualHost <%= @listen %>:<%= @port %>>
+    ServerName <%= @domain %>
+    ServerAlias www.<%= @domain %> <%= @additional_domains %>
+    ServerAdmin <%= @email %>
+    AssignUserID <%= @user %> <%= @group %>
+    DocumentRoot <%= @root %>
+    ScriptAlias /cgi-bin/ <%= @cgi_bin_dir %>
+
+    RLimitCPU <%= @apache_cpu_limit %>
+    RLimitMEM <%= @apache_memory_limit %>
+    RLimitNPROC <%= @apache_nproc_limit %>
+    MaxClientsVHost <%= @apache_clients_limit %>
+
+    ErrorLog <%= @log_dir %>/<%= @domain %>-error.log
+    CustomLog <%= @log_dir %>/<%= @domain %>-access.log common
+
+    DirectoryIndex <%= @index_files %>
+    AddType application/x-httpd-php .php .php3 .php4 .php5 .phtml
+    AddType application/x-httpd-php-source .phps
+
+    php_admin_value sendmail_path "<%= @sendmail_command %>"
+    php_admin_value upload_tmp_dir "<%= @user_tmp_dir %>"
+    php_admin_value session.save_path "<%= @user_tmp_dir %>"
+    php_admin_value max_execution_time "<%= @php_execution_limit %>"
+    php_admin_value memory_limit "<%= @php_memory_limit %>"
+    php_admin_value upload_max_filesize "<%= @php_upload_limit %>"
+</VirtualHost>
